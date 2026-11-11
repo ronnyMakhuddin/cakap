@@ -102,7 +102,7 @@ h1, h2, h3, p { margin: 0; }
 .spasi { flex: 1; }
 
 /* Beranda */
-.hero { text-align: center; padding: 6px 0 0; }
+.hero { text-align: center; padding: 6px 0 0; min-height: calc(100vh - 90px); } /* sisa layar pertama untuk pulau 3D */
 .maskot { width: 132px; height: 132px; animation: ayun 3.2s ease-in-out infinite; filter: drop-shadow(0 10px 0 rgba(0, 0, 0, .22)); }
 .maskot .mata { animation: kedip 4.5s infinite; transform-origin: 50% 46%; transform-box: view-box; }
 .maskot .antena { animation: goyangAntena 2.4s ease-in-out infinite; transform-origin: 60px 22px; transform-box: view-box; }

@@ -153,7 +153,7 @@ function pasang(k) {
   if (pulau) akar.remove(pulau);
   if (!pulauCache.has(k)) pulauCache.set(k, bangun(k));
   pulau = pulauCache.get(k);
-  pulau.userData.tumbuh.forEach((w) => w.scale.setScalar(0.001)); // tumbuh lagi tiap kali arena dibuka
+  pulau.userData.tumbuh.forEach((w) => { w.scale.setScalar(0.001); w.userData.t0 = undefined; }); // tumbuh lagi tiap kali arena dibuka
   const c = pulau.userData.c.cahaya;
   hemi.color.set(c.hemi[0]); hemi.groundColor.set(c.hemi[1]); hemi.intensity = c.hemi[2];
   dir.color.set(c.dir[0]); dir.intensity = c.dir[1];
@@ -171,11 +171,15 @@ function ukur() {
   if (TENANG) gambar(0);
 }
 function gambar(ms) {
-  const t = ms / 1000, dt = Math.min(0.05, Math.max(0, t - tl)); tl = t;
+  const t = ms / 1000, asli = Math.max(0, t - tl), dt = Math.min(0.05, asli); tl = t;
   if (pulau) {
     const u = pulau.userData;
     pulau.rotation.y = t * 0.1; pulau.position.y = Math.sin(t * 0.6) * 0.35;
-    for (const w of u.tumbuh) { const s = w.userData.s; if (w.scale.x < s) w.scale.setScalar(Math.min(s, w.scale.x + s * dt * 2.5)); }
+    for (const w of u.tumbuh) { // muncul membesar selama 0,6 detik (berbasis waktu, bukan jumlah frame)
+      const s = w.userData.s; if (w.scale.x >= s) continue;
+      if (w.userData.t0 === undefined) w.userData.t0 = t;
+      const q = Math.min(1, (t - w.userData.t0) / 0.6); w.scale.setScalar(Math.max(0.001, s * (1 - Math.pow(1 - q, 3))));
+    }
     for (const w of u.putar) w.rotation.y += dt * 1.1;
     for (const f of u.terbang) {
       const a = t * f.v + f.f;
@@ -186,8 +190,8 @@ function gambar(ms) {
   }
   renderer.render(scene, camera);
   // Penjaga kinerja: jika rata-rata di bawah ~20 fps, matikan lapisan 3D.
-  if (!mati && ms > 6000 && dt > 0) {
-    sampel.push(dt);
+  if (!mati && ms > 6000 && asli > 0 && asli < 0.25 && !document.hidden) { // lewati frame saat tab di latar belakang
+    sampel.push(asli);
     if (sampel.length >= 120) {
       const rata = sampel.reduce((x, y) => x + y, 0) / sampel.length; sampel = [];
       if (rata > 0.048) { mati = true; renderer.setAnimationLoop(null); renderer.domElement.style.display = 'none'; window.CAKAP_TIGA = null; }
