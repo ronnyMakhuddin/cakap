@@ -9,11 +9,11 @@
     sma: { nama: 'SMA', ket: 'SMA / SMK / MA', waktu: 22 }
   };
   const KAT = {
-    angka: { nama: 'Angka', ik: '7', w: 'var(--angka)', ket: 'Hitung cepat, deret, jam, simbol, soal cerita', plus: 5 },
-    kata: { nama: 'Kata', ik: 'Aa', w: 'var(--kata)', ket: 'Sinonim, peribahasa, kata baku, susun huruf', plus: 0 },
-    akal: { nama: 'Akal', ik: '?', w: 'var(--akal)', ket: 'Penalaran, sandi, arah, teka-teki', plus: 20 },
-    pola: { nama: 'Pola', ik: '◆', w: 'var(--pola)', ket: 'Pola gambar, cermin, putaran, kubus', plus: 10 },
-    ingatan: { nama: 'Ingatan', ik: '∞', w: 'var(--ingatan)', ket: 'Urutan, petak menyala, warna, kata', plus: 0 }
+    angka: { nama: 'Angka', ik: '7', w: 'var(--angka)', ket: 'Deret, kotak ajaib, operasi rahasia, simbol', plus: 10 },
+    kata: { nama: 'Kata', ik: 'Aa', w: 'var(--kata)', ket: 'Analogi, penyusup, deret huruf, susun huruf', plus: 0 },
+    akal: { nama: 'Akal', ik: '?', w: 'var(--akal)', ket: 'Penalaran, sandi, sudoku mini, siapa jujur', plus: 25 },
+    pola: { nama: 'Pola', ik: '◆', w: 'var(--pola)', ket: 'Matriks, jaring kubus, lipat kertas, putaran', plus: 15 },
+    ingatan: { nama: 'Ingatan', ik: '∞', w: 'var(--ingatan)', ket: 'Urutan menyala, petak, warna, daftar kata', plus: 0 }
   };
   const NAMA_LV = ['Mudah', 'Sedang', 'Sulit'];
   const GELAR = [[0, 'Pemula'], [6, 'Penjelajah'], [15, 'Pemikir'], [25, 'Cendekia'], [36, 'Ahli'], [45, 'Mahaguru']];
@@ -114,7 +114,7 @@
   /* ---------- keadaan ---------- */
   let st = null, timer = null, tunda = null;
   function bersih() { clearInterval(timer); clearTimeout(tunda); timer = tunda = null; }
-  function tema(k) { if (k) body.style.setProperty('--tema', KAT[k] ? KAT[k].w : 'var(--kilat)'); else body.style.removeProperty('--tema'); }
+  function tema(k, pentas) { if (k) body.style.setProperty('--tema', KAT[k] ? KAT[k].w : 'var(--kilat)'); else body.style.removeProperty('--tema'); window.CAKAP_PENTAS(pentas || k || null); }
   function layar(html) { app.innerHTML = `<div class="layar">${html}</div>`; window.scrollTo(0, 0); }
   const tbSuara = () => `<button class="tb kecil" data-aksi="suara" aria-label="Suara hidup/mati">${data.suara ? '🔊' : '🔇'}</button>`;
 
@@ -149,7 +149,7 @@
       <h2 class="judul-bagian">Cara bermain</h2>
       <div class="cara">
         <div><b>1 · Pilih arena</b>Tiap arena punya level Mudah, Sedang, dan Sulit dengan jenis soal yang berganti-ganti.</div>
-        <div><b>2 · Jawab cepat</b>Makin cepat makin besar poinnya. Jawaban benar beruntun memberi bonus 🔥.</div>
+        <div><b>2 · Jawab cepat</b>Makin cepat makin besar poinnya. Sebagian soal punya lebih dari satu jawaban benar — pilih semuanya!</div>
         <div><b>3 · Raih bintang</b>5 benar = ★, 7 benar = ★★, 8 benar = ★★★. Kumpulkan 45 bintang untuk gelar Mahaguru!</div>
       </div>
       <p class="kaki">Kemajuan tersimpan di perangkat ini · CAKAP</p>`);
@@ -219,10 +219,21 @@
 
   function tampilSoal() {
     const s = st.soal[st.i];
-    if (st.kilat) tema(s.k);
-    if (s.memo) {
+    if (st.kilat) tema(s.k, 'kilat');
+    if (s.urut) {
       st.kunci = true;
-      isi(hud() + `<div class="soal"><div class="teks">${s.memo.teks || 'Hafalkan urutan ini!'}</div>${s.memo.html}</div><p class="info">Perhatikan baik-baik…</p>`);
+      isi(hud() + `<div class="soal ayun"><div class="teks">Perhatikan urutan petak yang menyala!</div>
+        <div class="petak" style="--n:${s.n}">${Array.from(Array(s.n * s.n).keys()).map(() => '<span></span>').join('')}</div></div><p class="info">Perhatikan baik-baik…</p>`);
+      const sel = app.querySelectorAll('.petak span'); let i = 0;
+      const langkah = () => {
+        sel.forEach((c) => c.classList.remove('nyala'));
+        if (i >= s.sel.length) { tunda = setTimeout(tampilPilihan, 350); return; }
+        tunda = setTimeout(() => { sel[s.sel[i]].classList.add('nyala'); nada(380 + s.sel[i] * 28, 0.16); i++; tunda = setTimeout(langkah, 560); }, 190);
+      };
+      tunda = setTimeout(langkah, 500);
+    } else if (s.memo) {
+      st.kunci = true;
+      isi(hud() + `<div class="soal ayun"><div class="teks">${s.memo.teks || 'Hafalkan urutan ini!'}</div>${s.memo.html}</div><p class="info">Perhatikan baik-baik…</p>`);
       jalanBar(s.memo.ms, tampilPilihan, false);
     } else tampilPilihan();
   }
@@ -230,19 +241,26 @@
   function tampilPilihan() {
     const s = st.soal[st.i], total = (st.kilat ? 16 : JENJANG[st.j].waktu) + KAT[katSoal()].plus;
     if (s.tipe === 'grid') {
-      isi(hud() + `<div class="soal"><div class="teks">${s.q}</div>
+      isi(hud() + `<div class="soal ayun"><div class="teks">${s.q}</div>
         <div class="petak" style="--n:${s.n}">${Array.from(Array(s.n * s.n).keys()).map((i) => `<button data-aksi="petak" data-i="${i}" aria-label="Petak ${i + 1}"></button>`).join('')}</div></div>
         <p class="info" id="info"></p>`);
       st.pilih = [];
+    } else if (s.tipe === 'multi') {
+      const panjang = !s.gambar && s.choices.some((c) => c.length > 16);
+      isi(hud() + `<div class="soal ayun"><div class="teks">${s.q}</div>${s.stim || ''}</div>
+        <div class="pils multi ${s.gambar ? 'gambar' : ''} ${panjang ? 'teks-panjang' : ''}">
+          ${s.choices.map((c, i) => `<button class="pil" data-aksi="centang" data-i="${i}" data-h="${'ABCDEF'[i]}" aria-pressed="false">${c}</button>`).join('')}
+        </div><div class="aksi" style="margin-top:16px"><button class="tb utama" data-aksi="periksa">Periksa jawaban ✓</button></div><p class="info" id="info"></p>`);
+      st.pilih = [];
     } else {
       const n = s.choices.length, panjang = !s.gambar && s.choices.some((c) => c.replace(/<[^>]+>/g, '').length > 16);
-      isi(hud() + `<div class="soal"><div class="teks">${s.q}</div>${s.stim || ''}</div>
+      isi(hud() + `<div class="soal ayun"><div class="teks">${s.q}</div>${s.stim || ''}</div>
         <div class="pils ${s.gambar ? 'gambar' : ''} ${n === 2 ? 'dua' : n === 3 ? 'tiga' : ''} ${panjang ? 'teks-panjang' : ''}">
           ${s.choices.map((c, i) => `<button class="pil" data-aksi="jawab" data-i="${i}" data-h="${'ABCD'[i]}">${c}</button>`).join('')}
         </div><p class="info" id="info"></p>`);
     }
     st.kunci = false;
-    jalanBar(total * 1000, () => (s.tipe === 'grid' ? nilaiPetak(true) : jawab(-1)), true);
+    jalanBar(total * 1000, () => (s.tipe === 'grid' ? nilaiPetak(true) : s.tipe === 'multi' ? periksa(true) : jawab(-1)), true);
   }
 
   function catat(ok, pesanSalah) {
@@ -259,12 +277,15 @@
       info.className = 'info no'; info.textContent = pesanSalah;
     }
     const sk = app.querySelector('.skor'); if (sk) sk.textContent = st.skor;
+    const ps = app.querySelector('.pils'); if (ps) ps.classList.add('selesai');
     tunda = setTimeout(() => { st.i++; if (st.i < st.n) tampilSoal(); else hasil(); }, ok ? 950 : 1800);
   }
 
   function jawab(i) {
     if (!st || st.kunci) return;
-    const s = st.soal[st.i]; if (s.tipe === 'grid' || i >= s.choices.length) return;
+    const s = st.soal[st.i];
+    if (s.tipe === 'multi') { const t = app.querySelectorAll('.pil')[i]; if (t) centang(t); return; }
+    if (s.tipe === 'grid' || i >= s.choices.length) return;
     st.kunci = true; clearInterval(timer);
     const tb = app.querySelectorAll('.pil'), ok = i === s.a;
     tb.forEach((b) => { b.disabled = true; });
@@ -273,9 +294,42 @@
     catat(ok, i < 0 ? 'Waktu habis!' : 'Belum tepat.');
   }
 
+  function centang(t) {
+    if (!st || st.kunci) return;
+    const i = +t.dataset.i, p = st.pilih.indexOf(i);
+    if (p >= 0) st.pilih.splice(p, 1); else st.pilih.push(i);
+    t.classList.toggle('pilih', p < 0); t.setAttribute('aria-pressed', p < 0); bunyiKetuk();
+  }
+  function periksa(habis) {
+    if (!st || st.kunci) return;
+    const s = st.soal[st.i], tb = app.querySelectorAll('.pil'), info = document.getElementById('info');
+    if (!habis && !st.pilih.length) { info.className = 'info'; info.textContent = 'Pilih minimal satu jawaban dulu.'; return; }
+    st.kunci = true; clearInterval(timer);
+    let ok = !habis;
+    tb.forEach((b, i) => {
+      b.disabled = true; b.classList.remove('pilih');
+      const dipilih = st.pilih.includes(i), benar = s.benar.includes(i);
+      if (dipilih && benar) b.classList.add('benar'); else if (dipilih) { b.classList.add('salah'); ok = false; } else if (benar) { b.classList.add('lupa'); ok = false; }
+    });
+    const pb = app.querySelector('[data-aksi=periksa]'); if (pb) pb.disabled = true;
+    catat(ok, habis ? 'Waktu habis!' : 'Belum tepat — perhatikan yang bergaris putus-putus.');
+  }
+
   function ketukPetak(t) {
     if (!st || st.kunci) return;
-    const s = st.soal[st.i], i = +t.dataset.i, p = st.pilih.indexOf(i);
+    const s = st.soal[st.i], i = +t.dataset.i;
+    if (s.urut) {
+      const ke = st.pilih.length; st.pilih.push(i); bunyiKetuk();
+      t.classList.add('pilih'); setTimeout(() => t.classList.remove('pilih'), 220);
+      if (i !== s.sel[ke] || st.pilih.length === s.sel.length) {
+        const ok = i === s.sel[ke]; st.kunci = true; clearInterval(timer);
+        const sel = app.querySelectorAll('.petak button'); sel.forEach((b) => { b.disabled = true; });
+        if (ok) s.sel.forEach((x) => sel[x].classList.add('ok')); else { t.classList.add('no'); sel[s.sel[ke]].classList.add('lupa'); }
+        catat(ok, 'Urutannya belum tepat.');
+      }
+      return;
+    }
+    const p = st.pilih.indexOf(i);
     if (p >= 0) { st.pilih.splice(p, 1); t.classList.remove('pilih'); } else { st.pilih.push(i); t.classList.add('pilih'); }
     bunyiKetuk();
     if (st.pilih.length === s.sel.length) { st.kunci = true; clearInterval(timer); tunda = setTimeout(() => { st.kunci = false; nilaiPetak(false); }, 280); }
@@ -284,6 +338,7 @@
     if (!st || st.kunci) return;
     st.kunci = true; clearInterval(timer);
     const s = st.soal[st.i], sel = app.querySelectorAll('.petak button');
+    if (s.urut) { sel.forEach((b) => { b.disabled = true; }); catat(false, 'Waktu habis!'); return; }
     let ok = st.pilih.length === s.sel.length;
     sel.forEach((b, i) => {
       b.disabled = true; b.classList.remove('pilih');
@@ -343,13 +398,17 @@
       case 'kilat': mulai(d.j, 'kilat', 0); break;
       case 'jawab': jawab(+d.i); break;
       case 'petak': ketukPetak(t); break;
+      case 'centang': centang(t); break;
+      case 'periksa': periksa(false); break;
       case 'keluar': menu(st.j); break;
       case 'suara': data.suara = !data.suara; simpan(); t.textContent = data.suara ? '🔊' : '🔇'; break;
     }
   });
   document.addEventListener('keydown', (e) => {
-    if (!st || st.kunci || st.selesai || e.key.length !== 1) return;
-    const i = '1234'.indexOf(e.key) >= 0 ? '1234'.indexOf(e.key) : 'abcd'.indexOf(e.key.toLowerCase());
+    if (!st || st.kunci || st.selesai) return;
+    if (e.key === 'Enter' && st.soal[st.i].tipe === 'multi') { e.preventDefault(); periksa(false); return; }
+    if (e.key.length !== 1) return;
+    const i = '123456'.indexOf(e.key) >= 0 ? '123456'.indexOf(e.key) : 'abcdef'.indexOf(e.key.toLowerCase());
     if (i >= 0) jawab(i);
   });
 

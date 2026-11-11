@@ -353,7 +353,7 @@
     for (let i = 0; out.length < n; i++) {
       if (i % gens.length === 0) urut = shuffle(gens);
       let s, k, coba = 0;
-      do { s = urut[i % gens.length](); k = s.q + (s.stim || '') + (s.memo ? s.memo.html : '') + (s.choices || []).join(); coba++; } while (seen.has(k) && coba < 15);
+      do { s = urut[i % gens.length](); k = s.q + (s.stim || '') + (s.memo ? s.memo.html : '') + (s.choices || []).join() + (s.sel || []).join(); coba++; } while (seen.has(k) && coba < 15);
       seen.add(k); out.push(s);
     }
     return out;

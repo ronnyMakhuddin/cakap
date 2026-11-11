@@ -28,6 +28,54 @@ body {
 body::before { /* rona kategori saat bermain */
   content: ""; position: fixed; inset: 0; background: var(--tema, transparent); opacity: .26; transition: background-color .6s; pointer-events: none; z-index: 0;
 }
+#pentas { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.pentas { position: absolute; inset: 0; opacity: 0; transition: opacity .7s; }
+.pentas.tampil { opacity: 1; }
+.pentas svg { width: 100%; height: 100%; display: block; }
+.pentas svg * { transform-box: fill-box; }
+.p-angka { background: linear-gradient(#2a1a5e, #7b2d8e 45%, #e2632c 78%, #fbbf24); }
+.p-kata { background: linear-gradient(#0b3d91, #1d7fd1 55%, #7dd3fc); }
+.p-akal { background: radial-gradient(circle at 70% 30%, #3b1d7a, #150a3a 60%, #070318); }
+.p-pola { background: linear-gradient(#0e7490, #075985 50%, #0c2d5e); }
+.p-ingatan { background: linear-gradient(#1e1147, #3b1d5e 60%, #5b2a6e); }
+.p-kilat { background: linear-gradient(#1e1b4b, #4c1d95 60%, #6d28d9); }
+.awan { animation: hanyut 60s linear infinite; }
+.aw2 { animation-duration: 85s; animation-delay: -30s; } .aw3 { animation-duration: 110s; animation-delay: -70s; }
+@keyframes hanyut { from { translate: -260px 0; } to { translate: 1300px 0; } }
+.apung { animation: apungBesar 7s ease-in-out infinite; }
+.ap2 { animation-duration: 9s; animation-delay: -3s; } .ap3 { animation-duration: 8s; animation-delay: -5s; }
+@keyframes apungBesar { 0%, 100% { translate: 0 0; } 50% { translate: 14px -34px; } }
+.matahari { animation: pijar 5s ease-in-out infinite; transform-origin: center; }
+@keyframes pijar { 50% { transform: scale(1.12); opacity: .75; } }
+.layang { animation: melayang 6s ease-in-out infinite; transform-origin: 50% 100%; }
+.la2 { animation-duration: 7.5s; animation-delay: -2s; } .la3 { animation-duration: 5s; animation-delay: -3s; }
+@keyframes melayang { 0%, 100% { transform: rotate(-7deg) translateY(0); } 50% { transform: rotate(8deg) translateY(-22px); } }
+.burung { animation: terbang 34s linear infinite; }
+@keyframes terbang { from { translate: -120px 420px; } to { translate: 1320px 140px; } }
+.kelip { animation: kelip 3s ease-in-out infinite; }
+@keyframes kelip { 50% { opacity: .15; } }
+.roket { animation: meluncur 22s linear infinite; }
+@keyframes meluncur { from { translate: -120px 760px; } to { translate: 1320px -200px; } }
+.api-roket { animation: kelip .25s infinite; }
+.komet { animation: komet 9s ease-in infinite; opacity: 0; }
+@keyframes komet { 0% { translate: 1100px 40px; opacity: 0; } 4% { opacity: 1; } 14% { translate: 500px 280px; opacity: 0; } 100% { translate: 500px 280px; opacity: 0; } }
+.sinar { opacity: .07; animation: sinar 7s ease-in-out infinite; }
+@keyframes sinar { 50% { opacity: .15; } }
+.renang { animation: renangKanan 30s linear infinite; }
+.renang.ke-kiri { animation-name: renangKiri; }
+@keyframes renangKanan { from { transform: translateX(-120px); } to { transform: translateX(1320px); } }
+@keyframes renangKiri { from { transform: translateX(1320px) scaleX(-1); } to { transform: translateX(-120px) scaleX(-1); } }
+.gelembung { animation: gelembung 10s ease-in infinite; }
+@keyframes gelembung { to { translate: 24px -780px; } }
+.goyang { animation: goyangRumput 5s ease-in-out infinite; transform-origin: 50% 100%; }
+@keyframes goyangRumput { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(6deg); } }
+.kunang { animation: kunang 9s ease-in-out infinite alternate; }
+@keyframes kunang { from { translate: -30px 10px; } 50% { translate: 26px -30px; } to { translate: 50px 14px; } }
+.petir { opacity: 0; animation: petir 6s infinite; }
+.pt2 { animation-delay: -2.6s; }
+@keyframes petir { 0%, 100% { opacity: 0; } 1.5% { opacity: 1; } 3% { opacity: .1; } 4.5% { opacity: .9; } 8% { opacity: 0; } }
+.hujan { animation: hujan 1s linear infinite; }
+@keyframes hujan { to { translate: -230px 740px; } }
 #latar { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 #app { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 16px 16px 48px; min-height: 100vh; }
 button { font: inherit; color: var(--tinta); cursor: pointer; }
@@ -126,13 +174,13 @@ h1, h2, h3, p { margin: 0; }
 /* Bermain */
 .hud { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 14px; margin-bottom: 10px; }
 .lencana { background: var(--w); color: #fff; border: 2px solid var(--tinta); border-radius: 999px; padding: 4px 12px; font-family: var(--judul); white-space: nowrap; }
-.skor { background: rgba(255, 255, 255, .16); border-radius: 999px; padding: 4px 12px; font-family: var(--judul); font-size: 16px; }
+.skor { background: rgba(31, 36, 64, .55); border-radius: 999px; padding: 4px 12px; font-family: var(--judul); font-size: 16px; }
 .api { color: var(--emas); font-family: var(--judul); font-size: 16px; animation: pop .3s; }
 .titik { display: flex; gap: 6px; justify-content: center; margin-bottom: 10px; }
-.titik i { width: 100%; max-width: 44px; height: 8px; border-radius: 99px; background: rgba(255, 255, 255, .25); }
+.titik i { width: 100%; max-width: 44px; height: 8px; border-radius: 99px; background: rgba(31, 36, 64, .45); }
 .titik i.ok { background: #5ee6a8; } .titik i.no { background: #ff8589; } .titik i.kini { background: #fff; animation: kedipTitik 1s infinite; }
 @keyframes kedipTitik { 50% { opacity: .45; } }
-.waktu { height: 14px; border: 2.5px solid var(--tinta); border-radius: 999px; background: #fff; overflow: hidden; margin-bottom: 14px; }
+.waktu { position: relative; height: 14px; border: 2.5px solid var(--tinta); border-radius: 999px; background: #fff; overflow: hidden; margin-bottom: 14px; }
 .waktu i { display: block; height: 100%; width: 100%; background: var(--w); transform-origin: left; }
 .waktu.genting i { background: var(--salah); }
 .soal {
@@ -141,6 +189,15 @@ h1, h2, h3, p { margin: 0; }
   display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 14px; animation: pop .32s cubic-bezier(.3, 1.4, .5, 1) both;
 }
 @keyframes pop { from { opacity: 0; transform: scale(.92); } }
+.soal { position: relative; margin-top: 22px; transform-origin: 50% -22px; }
+.soal::before, .soal::after { content: ""; position: absolute; top: -27px; width: 5px; height: 26px; background: #6b4a2b; border: 1.5px solid var(--tinta); border-radius: 3px; }
+.soal::before { left: 14%; } .soal::after { right: 14%; }
+.soal.ayun { animation: pop .32s cubic-bezier(.3, 1.4, .5, 1) both, ayunPapan 5s ease-in-out .35s infinite; }
+@keyframes ayunPapan { 0%, 100% { rotate: -.7deg; } 50% { rotate: .7deg; } }
+.pils:not(.selesai) .pil { animation: muncul .3s both, apungPil 3.4s ease-in-out .4s infinite; }
+.pils:not(.selesai) .pil:nth-child(2) { animation-delay: .05s, .9s; } .pils:not(.selesai) .pil:nth-child(3) { animation-delay: .1s, 1.5s; }
+.pils:not(.selesai) .pil:nth-child(4) { animation-delay: .15s, .2s; } .pils:not(.selesai) .pil:nth-child(5) { animation-delay: .2s, 1.1s; } .pils:not(.selesai) .pil:nth-child(6) { animation-delay: .25s, 1.8s; }
+@keyframes apungPil { 0%, 100% { translate: 0 0; } 50% { translate: 0 -7px; } }
 .soal b { font-weight: 900; }
 .soal .teks b { font-size: 1.1em; }
 .soal small { font-size: 14px; color: var(--redup); font-weight: 700; }
@@ -159,6 +216,19 @@ h1, h2, h3, p { margin: 0; }
 .bx { width: 54px; height: 44px; display: grid; place-items: center; border: 2.5px solid var(--tinta); border-radius: 9px; background: #eef4ff; font: 700 20px var(--judul); }
 .bx.q { background: #fff3c4; border-style: dashed; }
 .jam { width: 130px; height: 130px; }
+.ajaib { display: grid; grid-template-columns: repeat(3, 58px); gap: 5px; }
+.ajaib .bx { width: 58px; height: 52px; }
+.sudoku { display: grid; grid-template-columns: repeat(4, 48px); border: 3px solid var(--tinta); border-radius: 8px; overflow: hidden; }
+.sudoku span { height: 48px; display: grid; place-items: center; font: 700 22px var(--judul); border: 1px solid #c9c4dc; background: #fff; }
+.sudoku span:nth-child(4n+2) { border-right: 3px solid var(--tinta); }
+.sudoku span:nth-child(n+5):nth-child(-n+8) { border-bottom: 3px solid var(--tinta); }
+.sudoku .q { background: #fff3c4; }
+.jaring { display: grid; grid-template-columns: repeat(var(--k), 52px); }
+.jaring span { width: 52px; height: 52px; }
+.jaring .sisi { border: 2px solid var(--tinta); background: #f6f3fb; padding: 5px; margin: -1px; }
+.jaring .fig { width: 100%; height: 100%; display: block; }
+.segi { width: 100%; max-width: 280px; }
+.kutip { display: inline-block; text-align: left; font-size: .92em; font-weight: 700; background: #f6f3fb; border-radius: 12px; padding: 8px 14px; line-height: 1.6; }
 .sebar { width: 100%; max-width: 420px; background: #f6f3fb; border-radius: 14px; }
 .kubus { width: 100%; max-width: 230px; }
 .pecahan { display: inline-grid; text-align: center; vertical-align: middle; font-size: 1.05em; line-height: 1.15; }
@@ -195,9 +265,15 @@ h1, h2, h3, p { margin: 0; }
 .pil.benar { background: #d7f5e6; border-color: var(--benar); box-shadow: 0 5px 0 var(--benar); animation: senang .4s; }
 .pil.salah { background: #fde0e1; border-color: var(--salah); box-shadow: 0 5px 0 var(--salah); animation: goyang .3s; }
 .pil[disabled] { cursor: default; }
+.pils.multi .pil::before { border-radius: 50%; }
+.pil.pilih { background: #fff3c4; box-shadow: 0 5px 0 var(--tinta), inset 0 0 0 3px var(--emas); }
+.pil.pilih::before { content: "✓"; background: var(--benar); }
+.pil.lupa { border: 2.5px dashed var(--benar); background: #f1fbf6; }
+.tb[disabled] { opacity: .5; cursor: default; }
 @keyframes goyang { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 @keyframes senang { 40% { transform: scale(1.05); } }
-.info { text-align: center; font: 600 18px var(--judul); margin-top: 14px; min-height: 26px; }
+.info { text-align: center; font: 600 18px var(--judul); margin: 14px auto 0; min-height: 26px; width: fit-content; max-width: 100%; padding: 4px 16px; border-radius: 999px; }
+.info:not(:empty) { background: rgba(31, 36, 64, .6); }
 .info.ok { color: #7ef0b8; } .info.no { color: #ffb0b3; }
 
 /* Hitung mundur */
@@ -236,6 +312,8 @@ h1, h2, h3, p { margin: 0; }
   .pil { font-size: 15.5px; padding-left: 42px; }
   .pil .urutan { font-size: 12.5px; letter-spacing: 0; }
   .memo span { width: 33px; height: 46px; font-size: 22px; }
+  .jaring { grid-template-columns: repeat(var(--k), 46px); }
+  .jaring span { width: 46px; height: 46px; }
   .pils.teks-panjang { grid-template-columns: 1fr; }
   .hud .lencana { font-size: 12.5px; padding: 4px 9px; }
   .mundur b { font-size: 96px; }
