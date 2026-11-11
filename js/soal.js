@@ -353,10 +353,10 @@
     for (let i = 0; out.length < n; i++) {
       if (i % gens.length === 0) urut = shuffle(gens);
       let s, k, coba = 0;
-      do { s = urut[i % gens.length](); k = s.q + (s.stim || '') + (s.memo ? s.memo.html : '') + s.choices.join(); coba++; } while (seen.has(k) && coba < 15);
+      do { s = urut[i % gens.length](); k = s.q + (s.stim || '') + (s.memo ? s.memo.html : '') + (s.choices || []).join(); coba++; } while (seen.has(k) && coba < 15);
       seen.add(k); out.push(s);
     }
     return out;
   }
-  root.CAKAP_SOAL = { buatRonde: buatRonde, fig: fig, SEMUA: SEMUA };
+  root.CAKAP_SOAL = { buatRonde: buatRonde, fig: fig, SEMUA: SEMUA, util: { ri: ri, pick: pick, shuffle: shuffle, sample: sample, mk: mk, numQ: numQ, fig: fig, figQ: figQ, bentuk: bentuk, draw: draw, fmt: fmt, rp: rp, A: A, K: K, L: L, P: P, ingat: ingat, WN: WN, BENTUK: BENTUK, WARNA: WARNA, NAMA: NAMA } };
 })(typeof window !== 'undefined' ? window : globalThis);
