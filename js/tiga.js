@@ -4,20 +4,20 @@
    dan latar SVG tetap tampil. Posisi dalam meter (x, z) dari pusat pulau; ry dalam derajat. */
 const CDN = 'https://polyfork.dev/cdn/';
 const R = 7.2; // jari-jari pulau (meter)
-const RAPAT = 0.62, BESAR = 1.3; // posisi dirapatkan dan model sedikit diperbesar agar pulau terasa penuh
+const RAPAT = 0.62, BESAR = 1.0; // posisi dirapatkan dan model sedikit diperbesar agar pulau terasa penuh
 const SIANG = { hemi: ['#ffffff', '#8892b0', 2.4], dir: ['#fff1d6', 2.6] };
 const PULAU = {
   beranda: {
     atas: '#7cc36a', sisi: '#8a5a36', cahaya: SIANG,
     isi: [
-      { id: 'classroom-globe-16a96e', h: 4.5, x: -3, z: 1.5, putar: true },
-      { id: 'toy-rocket-e51241', h: 6.5, x: 3.5, z: -2 },
-      { id: 'exercise-book-stack-266d9d', h: 1.8, x: 1, z: 4.5, ry: 25 },
+      { id: 'classroom-globe-16a96e', h: 2.8, x: -3, z: 2.5, putar: true },
+      { id: 'toy-rocket-e51241', h: 5, x: 4.5, z: -2 },
+      { id: 'exercise-book-stack-266d9d', h: 1.4, x: 1.5, z: 5, ry: 25 },
       { id: 'plum-tree-565179', x: -6, z: -3, s: 1.6 }, { id: 'plum-tree-565179', x: 6.5, z: 3, s: 1.3, ry: 90 },
       { id: 'sunflower-80ce15', x: -2, z: 6, s: 1.4 }, { id: 'sunflower-80ce15', x: -5, z: 4.8, s: 1.2, ry: 40 },
-      { id: 'red-barn-d41683', x: -1.5, z: -5.5, ry: 15, s: 0.8 }
+      { id: 'red-barn-d41683', x: -2.5, z: -5, ry: 15, s: 0.6 }
     ],
-    terbang: [{ id: 'hot-air-balloon-a2a511', h: 6, r: 13, y: 9, v: 0.22 }]
+    terbang: [{ id: 'hot-air-balloon-a2a511', h: 4.5, r: 13, y: 9, v: 0.22 }]
   },
   angka: {
     atas: '#ecd9a0', sisi: '#b08a57', cahaya: { hemi: ['#fff3e0', '#a4623f', 2.2], dir: ['#ffd9a0', 2.8] },
@@ -45,7 +45,7 @@ const PULAU = {
       { id: 'hay-bale-079e8c', x: -5, z: 5.6, s: 1.6 }, { id: 'hay-bale-079e8c', x: -3.9, z: 6.6, ry: 60, s: 1.6 },
       { id: 'sunflower-80ce15', x: 0.5, z: 6.8, s: 1.3 }, { id: 'sunflower-80ce15', x: 1.6, z: 7.2, s: 1.1, ry: 30 }
     ],
-    terbang: [{ id: 'hot-air-balloon-a2a511', h: 5.5, r: 13, y: 10, v: 0.2 }]
+    terbang: [{ id: 'hot-air-balloon-a2a511', h: 4.5, r: 13, y: 10, v: 0.2 }]
   },
   akal: {
     atas: '#c9a27e', sisi: '#7d5a45', cahaya: { hemi: ['#dfe6ff', '#4a3a55', 2], dir: ['#ffffff', 3] },
@@ -165,7 +165,7 @@ function ukur() {
   const w = window.innerWidth, h = window.innerHeight, a = w / h;
   renderer.setSize(w, h, false);
   // Pulau memenuhi sebagian lebar layar dan digeser ke bawah agar tidak menutupi soal.
-  const porsi = a > 1.2 ? 0.42 : a > 0.8 ? 0.66 : 0.96, geser = a > 1.2 ? 0.25 : 0.27;
+  const porsi = a > 1.2 ? 0.4 : a > 0.8 ? 0.62 : 0.84, geser = a > 1.2 ? 0.27 : 0.31;
   const D = (2 * R + 7) / (porsi * 2 * Math.tan(FOV * Math.PI / 360) * a);
   camera.aspect = a; camera.position.set(0, D * Math.sin(ELEV) + 2, D * Math.cos(ELEV)); camera.lookAt(0, 2, 0);
   camera.setViewOffset(w, h, 0, -geser * h, w, h); camera.updateProjectionMatrix();
