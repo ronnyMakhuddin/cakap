@@ -3,7 +3,8 @@
    Jika three.js, WebGL, atau model gagal dimuat — atau perangkat terlalu lambat — lapisan ini mati sendiri
    dan latar SVG tetap tampil. Posisi dalam meter (x, z) dari pusat pulau; ry dalam derajat. */
 const CDN = 'https://polyfork.dev/cdn/';
-const R = 10; // jari-jari pulau (meter)
+const R = 7.2; // jari-jari pulau (meter)
+const RAPAT = 0.62, BESAR = 1.3; // posisi dirapatkan dan model sedikit diperbesar agar pulau terasa penuh
 const SIANG = { hemi: ['#ffffff', '#8892b0', 2.4], dir: ['#fff1d6', 2.6] };
 const PULAU = {
   beranda: {
@@ -100,7 +101,7 @@ const PULAU = {
 };
 
 const TENANG = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const FOV = 30, ELEV = 24 * Math.PI / 180;
+const FOV = 30, ELEV = 28 * Math.PI / 180;
 let THREE, loader, renderer, scene, camera, hemi, dir, akar, pulau = null, kini = null, tl = 0;
 const gltfCache = new Map(), pulauCache = new Map(), dipakai = new Set();
 let sampel = [], mati = false;
@@ -113,14 +114,14 @@ function ambil(id) { // model pertama dipakai langsung; pemakaian berikutnya mem
   return muat(id).then((obj) => { if (!obj) return null; if (dipakai.has(id)) return obj.clone(true); dipakai.add(id); return obj; });
 }
 function bungkus(it, obj) {
-  const w = new THREE.Group(); let s = it.s || 1;
+  const w = new THREE.Group(); let s = (it.s || 1) * BESAR;
   if (it.h) { // model di luar kit: samakan tinggi dan dudukkan di tanah
     const b = new THREE.Box3().setFromObject(obj), sz = b.getSize(new THREE.Vector3());
-    s = it.h / Math.max(sz.y, 0.001);
+    s = it.h * BESAR / Math.max(sz.y, 0.001);
     obj.position.set(-(b.min.x + b.max.x) / 2, -b.min.y, -(b.min.z + b.max.z) / 2);
   }
   w.add(obj); w.userData.s = s; w.scale.setScalar(0.001);
-  w.position.set(it.x || 0, it.y || 0, it.z || 0); w.rotation.y = (it.ry || 0) * Math.PI / 180;
+  w.position.set((it.x || 0) * RAPAT, it.y || 0, (it.z || 0) * RAPAT); w.rotation.y = (it.ry || 0) * Math.PI / 180;
   return w;
 }
 function bangun(k) {
@@ -142,9 +143,9 @@ function bangun(k) {
   }));
   (c.terbang || []).forEach((it, i) => ambil(it.id).then((obj) => {
     if (!obj) return; const w = bungkus(it, obj); g.add(w); g.userData.tumbuh.push(w);
-    g.userData.terbang.push({ w: w, r: it.r, y: it.y, v: it.v, f: i * 2.4, putar: it.putar });
+    g.userData.terbang.push({ w: w, r: it.r * RAPAT + 1.5, y: it.y * 0.75, v: it.v, f: i * 2.4, putar: it.putar });
   }));
-  if (c.api) { const l = new THREE.PointLight('#ff9a3c', 160, 40, 1.6); l.position.set(c.api[0], c.api[1], c.api[2]); g.add(l); g.userData.api = l; }
+  if (c.api) { const l = new THREE.PointLight('#ff9a3c', 160, 40, 1.6); l.position.set(c.api[0] * RAPAT, c.api[1], c.api[2] * RAPAT); g.add(l); g.userData.api = l; }
   return g;
 }
 function pasang(k) {
@@ -164,8 +165,8 @@ function ukur() {
   const w = window.innerWidth, h = window.innerHeight, a = w / h;
   renderer.setSize(w, h, false);
   // Pulau memenuhi sebagian lebar layar dan digeser ke bawah agar tidak menutupi soal.
-  const porsi = a > 1.2 ? 0.44 : a > 0.8 ? 0.68 : 0.98, geser = a > 1.2 ? 0.27 : 0.33;
-  const D = 27 / (porsi * 2 * Math.tan(FOV * Math.PI / 360) * a);
+  const porsi = a > 1.2 ? 0.42 : a > 0.8 ? 0.66 : 0.96, geser = a > 1.2 ? 0.25 : 0.27;
+  const D = (2 * R + 7) / (porsi * 2 * Math.tan(FOV * Math.PI / 360) * a);
   camera.aspect = a; camera.position.set(0, D * Math.sin(ELEV) + 2, D * Math.cos(ELEV)); camera.lookAt(0, 2, 0);
   camera.setViewOffset(w, h, 0, -geser * h, w, h); camera.updateProjectionMatrix();
   if (TENANG) gambar(0);
