@@ -31,4 +31,9 @@ Settings → Pages → Source: *Deploy from a branch* → `main` / `(root)`.
 - `js/bank.js`, `js/bank2.js` — bank soal (kata, akal, peribahasa, kata baku, majas, dll.)
 - `js/soal.js`, `js/soal2.js`, `js/soal3.js` — pembangkit soal otomatis dan susunan level tiap jenjang
 - `js/pentas.js` — latar pemandangan beranimasi tiap arena
+- `js/tiga.js` — lapisan model 3D; daftar model per arena ada di awal berkas
+
+## Kredit
+
+Model 3D low-poly berasal dari [Polyfork](https://polyfork.dev) dan dimuat langsung dari CDN mereka saat game dibuka (tidak ada berkas model di repo ini). Lisensi model: lihat https://polyfork.dev/licensing. Selain itu, semua soal, gambar 2D, dan kode dibuat sendiri.
 - `js/app.js` — tampilan dan alur permainan

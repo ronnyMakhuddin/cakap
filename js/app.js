@@ -114,7 +114,7 @@
   /* ---------- keadaan ---------- */
   let st = null, timer = null, tunda = null;
   function bersih() { clearInterval(timer); clearTimeout(tunda); timer = tunda = null; }
-  function tema(k, pentas) { if (k) body.style.setProperty('--tema', KAT[k] ? KAT[k].w : 'var(--kilat)'); else body.style.removeProperty('--tema'); window.CAKAP_PENTAS(pentas || k || null); }
+  function tema(k, pentas) { if (k) body.style.setProperty('--tema', KAT[k] ? KAT[k].w : 'var(--kilat)'); else body.style.removeProperty('--tema'); window.CAKAP_PENTAS(pentas || k || null); const m3 = pentas || k || 'beranda'; window.CAKAP_TIGA_K = m3; if (window.CAKAP_TIGA) window.CAKAP_TIGA(m3); }
   function layar(html) { app.innerHTML = `<div class="layar">${html}</div>`; window.scrollTo(0, 0); }
   const tbSuara = () => `<button class="tb kecil" data-aksi="suara" aria-label="Suara hidup/mati">${data.suara ? '🔊' : '🔇'}</button>`;
 
@@ -152,7 +152,7 @@
         <div><b>2 · Jawab cepat</b>Makin cepat makin besar poinnya. Sebagian soal punya lebih dari satu jawaban benar — pilih semuanya!</div>
         <div><b>3 · Raih bintang</b>5 benar = ★, 7 benar = ★★, 8 benar = ★★★. Kumpulkan 45 bintang untuk gelar Mahaguru!</div>
       </div>
-      <p class="kaki">Kemajuan tersimpan di perangkat ini · CAKAP</p>`);
+      <p class="kaki">Kemajuan tersimpan di perangkat ini · Model 3D: <a href="https://polyfork.dev" target="_blank" rel="noopener">Polyfork</a></p>`);
   }
 
   function menu(j) {

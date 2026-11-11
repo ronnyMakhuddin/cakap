@@ -76,6 +76,8 @@ body::before { /* rona kategori saat bermain */
 @keyframes petir { 0%, 100% { opacity: 0; } 1.5% { opacity: 1; } 3% { opacity: .1; } 4.5% { opacity: .9; } 8% { opacity: 0; } }
 .hujan { animation: hujan 1s linear infinite; }
 @keyframes hujan { to { translate: -230px 740px; } }
+#tiga { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.kaki a { color: inherit; }
 #latar { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 #app { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 16px 16px 48px; min-height: 100vh; }
 button { font: inherit; color: var(--tinta); cursor: pointer; }
